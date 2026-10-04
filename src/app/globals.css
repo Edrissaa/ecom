@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens — warm editorial palette
+   ------------------------------------------------------------------ */
+@theme inline {
+  --color-ivory: #f7f4ef;
+  --color-sand: #efeae2;
+  --color-espresso: #21170f;
+  --color-footer: #1d130d;
+  --color-walnut: #765234;
+  --color-walnut-dark: #5f4029;
+  --color-caramel: #986c42;
+  --color-beige: #d9cdbf;
+  --color-line: #e6ded4;
+  --color-muted: #70685f;
+  --color-white: #ffffff;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-playfair), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+
+  --ease-premium: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --animate-bump: bump 420ms var(--ease-premium);
+  --animate-fade-up: fade-up 600ms var(--ease-premium) both;
+
+  @keyframes bump {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px; /* keep anchored sections clear of the fixed header */
+    scrollbar-gutter: stable; /* opening a drawer (overflow: hidden) must not shift the layout */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ivory);
+    color: var(--color-espresso);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-walnut);
+    color: var(--color-ivory);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-walnut);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Dark surfaces get a light focus ring. */
+  [data-surface="dark"] :focus-visible,
+  [data-surface="dark"]:focus-visible {
+    outline-color: var(--color-ivory);
+  }
+
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Layout + shared component classes
+   ------------------------------------------------------------------ */
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+  padding-inline: 1rem; /* 16 */
+  @media (width >= 40rem) { padding-inline: 1.5rem; } /* 24 */
+  @media (width >= 64rem) { padding-inline: 3rem; } /* 48 */
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+@layer components {
+  /* Overlays stay mounted so they can animate out; visibility hides them from AT + tab order afterwards. */
+  .overlay {
+    visibility: hidden;
+    transition: visibility 0s linear 360ms;
+  }
+  .overlay[data-open="true"] {
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  /* Scroll-reveal: only ever hidden by JS, so content is always visible without it. */
+  [data-reveal="hidden"] {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  [data-reveal="shown"] {
+    opacity: 1;
+    transform: none;
+    transition: opacity 700ms var(--ease-premium), transform 700ms var(--ease-premium);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion: keep state changes, drop the movement
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+  [data-reveal="hidden"] { opacity: 1; transform: none; }
+}
