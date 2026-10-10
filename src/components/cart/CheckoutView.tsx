@@ -5,12 +5,11 @@ import Image from "next/image";
 import { CircleCheck, Info } from "lucide-react";
 import { OrderSummary, shippingFor } from "@/components/cart/OrderSummary";
 import { Button, ButtonLink } from "@/components/ui/Button";
+import { Field } from "@/components/ui/Field";
+import { Input } from "@/components/ui/Input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
 import { useCart } from "@/components/providers/ShopProvider";
 import { formatPrice } from "@/lib/format";
-
-const field =
-  "mt-1.5 h-12 w-full rounded-md border border-line bg-white/70 px-4 text-sm text-espresso transition-colors duration-200 placeholder:text-muted/60 focus-visible:border-walnut focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-walnut/25";
-const label = "text-[13px] font-semibold";
 
 const COUNTRIES = ["United States", "Canada", "United Kingdom", "Australia", "Germany", "France"];
 
@@ -84,10 +83,9 @@ export function CheckoutView() {
       <form onSubmit={handleSubmit} aria-labelledby="delivery-heading" className="space-y-10">
         <fieldset>
           <legend className="font-serif text-2xl font-bold tracking-tight">Contact</legend>
-          <label htmlFor="email" className={`${label} mt-5 block`}>
-            Email address
-          </label>
-          <input id="email" name="email" type="email" required autoComplete="email" inputMode="email" placeholder="you@example.com" className={field} />
+          <Field label="Email address" className="mt-5">
+            <Input name="email" type="email" required autoComplete="email" inputMode="email" placeholder="you@example.com" />
+          </Field>
         </fieldset>
 
         <fieldset>
@@ -95,46 +93,35 @@ export function CheckoutView() {
             Delivery
           </legend>
           <div className="mt-5 grid gap-x-4 gap-y-5 sm:grid-cols-2">
-            <div>
-              <label htmlFor="first-name" className={label}>
-                First name
-              </label>
-              <input id="first-name" name="firstName" required autoComplete="given-name" className={field} />
-            </div>
-            <div>
-              <label htmlFor="last-name" className={label}>
-                Last name
-              </label>
-              <input id="last-name" name="lastName" required autoComplete="family-name" className={field} />
-            </div>
-            <div className="sm:col-span-2">
-              <label htmlFor="address" className={label}>
-                Address
-              </label>
-              <input id="address" name="address" required autoComplete="street-address" className={field} />
-            </div>
-            <div>
-              <label htmlFor="city" className={label}>
-                City
-              </label>
-              <input id="city" name="city" required autoComplete="address-level2" className={field} />
-            </div>
-            <div>
-              <label htmlFor="postal-code" className={label}>
-                Postal code
-              </label>
-              <input id="postal-code" name="postalCode" required autoComplete="postal-code" className={field} />
-            </div>
-            <div className="sm:col-span-2">
-              <label htmlFor="country" className={label}>
-                Country
-              </label>
-              <select id="country" name="country" required autoComplete="country-name" defaultValue="United States" className={field}>
-                {COUNTRIES.map((country) => (
-                  <option key={country}>{country}</option>
-                ))}
-              </select>
-            </div>
+            <Field label="First name">
+              <Input name="firstName" required autoComplete="given-name" />
+            </Field>
+            <Field label="Last name">
+              <Input name="lastName" required autoComplete="family-name" />
+            </Field>
+            <Field label="Address" className="sm:col-span-2">
+              <Input name="address" required autoComplete="street-address" />
+            </Field>
+            <Field label="City">
+              <Input name="city" required autoComplete="address-level2" />
+            </Field>
+            <Field label="Postal code">
+              <Input name="postalCode" required autoComplete="postal-code" />
+            </Field>
+            <Field label="Country" className="sm:col-span-2">
+              <Select name="country" required defaultValue="United States" autoComplete="country-name">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {COUNTRIES.map((country) => (
+                    <SelectItem key={country} value={country}>
+                      {country}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
           </div>
         </fieldset>
 

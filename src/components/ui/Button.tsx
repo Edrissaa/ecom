@@ -1,29 +1,37 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-export type ButtonVariant = "primary" | "secondary" | "outline" | "light" | "ghost-light";
-export type ButtonSize = "sm" | "md" | "lg";
-
-const base =
+export const buttonVariants = cva(
   "group/btn inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-md font-semibold tracking-[0.01em] " +
-  "transition-[background-color,color,border-color,transform] duration-300 ease-premium active:translate-y-px " +
-  "disabled:pointer-events-none disabled:opacity-60";
+    "transition-[background-color,color,border-color,transform] duration-300 ease-premium active:translate-y-px " +
+    "disabled:pointer-events-none disabled:opacity-60",
+  {
+    variants: {
+      variant: {
+        primary: "bg-walnut text-ivory hover:bg-walnut-dark",
+        secondary: "border border-line bg-sand text-espresso hover:border-beige hover:bg-beige/60",
+        outline: "border border-espresso/25 bg-transparent text-espresso hover:border-espresso hover:bg-espresso hover:text-ivory",
+        light: "bg-ivory text-espresso hover:bg-white",
+        "ghost-light": "border border-ivory/40 text-ivory hover:border-ivory hover:bg-ivory hover:text-espresso",
+        ghost: "text-espresso hover:bg-sand",
+        danger: "bg-danger text-ivory hover:bg-danger/90",
+      },
+      size: {
+        sm: "h-9 px-4 text-xs",
+        md: "h-11 px-5 text-[13px]",
+        lg: "h-12 px-7 text-sm",
+        icon: "size-11",
+      },
+    },
+    defaultVariants: { variant: "primary", size: "md" },
+  },
+);
 
-const variants: Record<ButtonVariant, string> = {
-  primary: "bg-walnut text-ivory hover:bg-walnut-dark",
-  secondary: "border border-line bg-sand text-espresso hover:border-beige hover:bg-beige/60",
-  outline: "border border-espresso/25 bg-transparent text-espresso hover:border-espresso hover:bg-espresso hover:text-ivory",
-  light: "bg-ivory text-espresso hover:bg-white",
-  "ghost-light": "border border-ivory/40 text-ivory hover:border-ivory hover:bg-ivory hover:text-espresso",
-};
-
-const sizes: Record<ButtonSize, string> = {
-  sm: "h-9 px-4 text-xs",
-  md: "h-11 px-5 text-[13px]",
-  lg: "h-12 px-7 text-sm",
-};
+export type ButtonVariant = NonNullable<VariantProps<typeof buttonVariants>["variant"]>;
+export type ButtonSize = NonNullable<VariantProps<typeof buttonVariants>["size"]>;
 
 interface StyleOptions {
   variant?: ButtonVariant;
@@ -31,8 +39,8 @@ interface StyleOptions {
   className?: string;
 }
 
-export function buttonStyles({ variant = "primary", size = "md", className }: StyleOptions = {}) {
-  return cn(base, variants[variant], sizes[size], className);
+export function buttonStyles({ variant, size, className }: StyleOptions = {}) {
+  return cn(buttonVariants({ variant, size }), className);
 }
 
 type ArrowKind = boolean | "up-right";
